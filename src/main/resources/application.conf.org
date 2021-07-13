@@ -1,0 +1,9 @@
+snowflake {
+    url = "https://<account>.snowflakecomputing.com:443",
+    user = "<user>",
+    password = "<password>",
+    role = "<role>",
+    warehouse = "<warehouse>",
+    db = "<default db>",
+    schema = "<default schema>"
+}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" xmlns:data="http://jpmml.org/jpmml-model/InlineTable" version="4.4">
+	<Header>
+		<Application name="JPMML-SkLearn" version="1.6.22"/>
+		<Timestamp>2021-07-06T17:17:12Z</Timestamp>
+	</Header>
+	<MiningBuildTask>
+		<Extension name="repr">PMMLPipeline(steps=[('model', KMeans(n_clusters=4, random_state=0))])</Extension>
+	</MiningBuildTask>
+	<DataDictionary>
+		<DataField name="SEPAL_LENGTH" optype="continuous" dataType="double"/>
+		<DataField name="SEPAL_WIDTH" optype="continuous" dataType="double"/>
+		<DataField name="PETAL_LENGTH" optype="continuous" dataType="double"/>
+		<DataField name="PETAL_WIDTH" optype="continuous" dataType="double"/>
+	</DataDictionary>
+	<ClusteringModel functionName="clustering" algorithmName="sklearn.cluster._kmeans.KMeans" modelClass="centerBased" numberOfClusters="4">
+		<MiningSchema>
+			<MiningField name="SEPAL_LENGTH"/>
+			<MiningField name="SEPAL_WIDTH"/>
+			<MiningField name="PETAL_LENGTH"/>
+			<MiningField name="PETAL_WIDTH"/>
+		</MiningSchema>
+		<Output>
+			<OutputField name="cluster" optype="categorical" dataType="string"/>
+			<OutputField name="affinity(0)" optype="continuous" dataType="double" feature="affinity" value="0"/>
+			<OutputField name="affinity(1)" optype="continuous" dataType="double" feature="affinity" value="1"/>
+			<OutputField name="affinity(2)" optype="continuous" dataType="double" feature="affinity" value="2"/>
+			<OutputField name="affinity(3)" optype="continuous" dataType="double" feature="affinity" value="3"/>
+		</Output>
+		<ComparisonMeasure kind="distance">
+			<squaredEuclidean/>
+		</ComparisonMeasure>
+		<ClusteringField field="SEPAL_LENGTH"/>
+		<ClusteringField field="SEPAL_WIDTH"/>
+		<ClusteringField field="PETAL_LENGTH"/>
+		<ClusteringField field="PETAL_WIDTH"/>
+		<Cluster id="0" size="28">
+			<Array type="real">5.5321428571428575 2.6357142857142857 3.960714285714286 1.2285714285714286</Array>
+		</Cluster>
+		<Cluster id="1" size="50">
+			<Array type="real">5.006 3.418 1.4639999999999995 0.24400000000000022</Array>
+		</Cluster>
+		<Cluster id="2" size="32">
+			<Array type="real">6.9125 3.1 5.846875 2.13125</Array>
+		</Cluster>
+		<Cluster id="3" size="40">
+			<Array type="real">6.2525 2.855 4.815 1.625</Array>
+		</Cluster>
+	</ClusteringModel>
+</PMML>
