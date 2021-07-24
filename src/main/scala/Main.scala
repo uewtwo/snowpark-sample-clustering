@@ -4,7 +4,6 @@ import com.snowflake.snowpark.types._
 
 import com.typesafe.config.ConfigFactory
 import java.lang.Math._
-import pmmlmodel.KMeansIrisPMML
 import org.pmml4s.model.Model
 
 object Main {
@@ -23,50 +22,11 @@ object Main {
     val irisTransformationUDF = udf(testFunc.irisTransformationFunc)
     
     val dfFitted = df.withColumn(
-      "label",
-      irisTransformationUDF(
+      "label", irisTransformationUDF(
         col("sepal_length"), col("sepal_width"), col("petal_length"), col("petal_width"))
     )
-
-    println(dfFitted.show())
+    println(dfFitted.show(150))
   }
-
-  /** debug code */
-  // def clusteringIrisUdf(session: Session): Unit = {
-  //
-  //   val df = getIrisDf(session)
-  //
-  //   // val model = new KMeansIrisPMML("KMeansIris.pmml").getModel()
-  //   val model: Model = Model.fromFile("src/main/resources/KMeansIris.pmml")
-  //
-  //   val irisTransformationFunc = (
-  //     sepal_length: Double,
-  //     sepal_width: Double,
-  //     petal_length: Double,
-  //     petal_width: Double) => {
-  //       val v = Array[Double](sepal_length, sepal_width, petal_length, petal_width)
-  //       model.predict(v).last.asInstanceOf[String]
-  //     }
-  //   val irisTransformationUDF = udf(irisTransformationFunc)
-  //   df.withColumn(
-  //     "label",
-  //     irisTransformationUDF(
-  //       col("sepal_length"), col("sepal_width"), col("petal_length"), col("petal_width"))
-  //   ).show()
-  // }
-  //
-  // def udfSample(session: Session): Unit = {
-  //   // 初回登録用
-  //   println(IEEEremainder(5.1, 0.2))
-  //   val ereFunc = (x:Double, y:Double) => IEEEremainder(x, y)
-  //   val myEreUdf = session.udf.registerPermanent("ereUdf1", ereFunc, "%iris_data")
-  //   // session.table("iris_data").select(myEreUdf(col("sepal_width"), col("petal_width"))).show()
-
-  //   val df = session.table("IRIS_DATA")
-  //   df.select(callUDF("ereUdf", col("sepal_width"), col("petal_width"))).show()
-  //   df.select(callUDF("ereUdf1", col("sepal_width"), col("petal_width"))).show()
-  // }
-  /** debug code */
 
   def getSnowflakeSession(): Session = {
     val conf = ConfigFactory.load
@@ -97,30 +57,18 @@ object Main {
     df
   }
 }
-
-class TestFunc {
-  val model: Model = new KMeansIrisPMML("KMeansIris.pmml").getModel()
-  // KMeansIrisPMML("KMeansIris.pmml"))
-
-  val irisTransformationFunc = (
-    sepal_length: Double,
-    sepal_width: Double,
-    petal_length: Double,
-    petal_width: Double) => {
-      val v = Array[Double](sepal_length, sepal_width, petal_length, petal_width)
-      model.predict(v).last.asInstanceOf[String]
-    }
-}
-
 class SerTestFunc extends Serializable {
-  val model: Model = new KMeansIrisPMML("KMeansIris.pmml").getModel()
-
   val irisTransformationFunc = (
     sepal_length: Double,
     sepal_width: Double,
     petal_length: Double,
     petal_width: Double) => {
+      import java.io._
+      var resourceName = "/KMeansIris.pmml"
+      var inputStream = classOf[com.snowflake.snowpark.DataFrame]
+        .getResourceAsStream(resourceName)
+      val model = Model.fromInputStream(inputStream)
       val v = Array[Double](sepal_length, sepal_width, petal_length, petal_width)
-      model.predict(v).last.asInstanceOf[String]
+      model.predict(v).head.asInstanceOf[String]
     }  
 }
